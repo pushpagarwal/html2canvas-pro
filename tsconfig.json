@@ -14,7 +14,8 @@
         "declaration": true,
         "skipLibCheck": true,
         "declarationDir": "dist/types",
-        "resolveJsonModule": true
+        "resolveJsonModule": true,
+        "moduleResolution": "node"
     },
     "include": ["src"]
 }
