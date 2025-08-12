@@ -48,7 +48,7 @@ export class ForeignObjectRenderer extends Renderer {
     }
 }
 
-export const loadSerializedSVG = (svg: Node): Promise<HTMLImageElement> =>
+const loadSerializedSVG = (svg: Node): Promise<HTMLImageElement> =>
     new Promise((resolve, reject) => {
         const img = new Image();
         img.onload = () => {

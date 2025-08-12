@@ -68,7 +68,7 @@ export const processColorStops = (stops: UnprocessedGradientColorStop[], lineLen
     });
 };
 
-const getAngleFromCorner = (corner: GradientCorner, width: number, height: number): number => {
+export const getAngleFromCorner = (corner: GradientCorner, width: number, height: number): number => {
     const centerX = width / 2;
     const centerY = height / 2;
     const x = getAbsoluteValue(corner[0], width) - centerX;

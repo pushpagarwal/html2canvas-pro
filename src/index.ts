@@ -175,3 +175,5 @@ const parseBackgroundColor = (context: Context, element: HTMLElement, background
             : documentBackgroundColor
         : defaultBackgroundColor;
 };
+
+export * from './exports';

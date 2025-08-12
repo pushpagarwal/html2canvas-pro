@@ -20,7 +20,9 @@ const parseNodeTree = (context: Context, node: Node, parent: ElementContainer, r
 
         // Fixes #2238 #1624 - Fix the issue of TextNode content being overlooked in rendering due to being perceived as blank by trim().
         if (isTextNode(childNode) && childNode.data.length > 0) {
-            parent.textNodes.push(new TextContainer(context, childNode, parent.styles));
+            const text = new TextContainer(context, childNode, parent.styles);
+            parent.textNodes.push(text);
+            parent.childNodes.push(text);
         } else if (isElementNode(childNode)) {
             if (isSlotElement(childNode) && childNode.assignedNodes) {
                 childNode.assignedNodes().forEach((childNode) => parseNodeTree(context, childNode, parent, root));
@@ -38,6 +40,7 @@ const parseNodeTree = (context: Context, node: Node, parent: ElementContainer, r
                     }
 
                     parent.elements.push(container);
+                    parent.childNodes.push(container);
                     childNode.slot;
                     if (childNode.shadowRoot) {
                         parseNodeTree(context, childNode.shadowRoot, container, root);

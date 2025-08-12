@@ -41,6 +41,7 @@ export interface WindowOptions {
 export type CloneConfigurations = CloneOptions & {
     inlineImages: boolean;
     copyStyles: boolean;
+    resetNodeScroll?: boolean;
 };
 
 const IGNORE_ATTRIBUTE = 'data-html2canvas-ignore';
@@ -87,7 +88,9 @@ export class DocumentCloner {
          */
 
         const iframeLoad = iframeLoader(iframe).then(async () => {
-            this.scrolledElements.forEach(restoreNodeScroll);
+            if (!this.options.resetNodeScroll) {
+                this.scrolledElements.forEach(restoreNodeScroll);
+            }
             if (cloneWindow) {
                 cloneWindow.scrollTo(windowSize.left, windowSize.top);
                 if (
@@ -134,8 +137,10 @@ export class DocumentCloner {
          * */
         const baseUri = documentClone.baseURI;
         documentClone.open();
-        documentClone.write(`${serializeDoctype(document.doctype)}<html></html>`);
-        // Chrome scrolls the parent document for some reason after the write to the cloned window???
+        if (document.doctype && document.doctype.nodeType === Node.DOCUMENT_TYPE_NODE) {
+            const doctypeClone = document.doctype.cloneNode(false);
+            documentClone.append(doctypeClone);
+        } // Chrome scrolls the parent document for some reason after the write to the cloned window???
         restoreOwnerScroll(this.referenceElement.ownerDocument, scrollX, scrollY);
         /**
          * Note: adoptNode() should be called AFTER documentClone.open() and close()
@@ -149,7 +154,7 @@ export class DocumentCloner {
          * */
         const adoptedNode = documentClone.adoptNode(this.documentElement);
         addBase(adoptedNode, baseUri);
-        documentClone.replaceChild(adoptedNode, documentClone.documentElement);
+        documentClone.appendChild(adoptedNode);
         documentClone.close();
 
         return iframeLoad;
@@ -582,32 +587,6 @@ export const copyCSSStyles = <T extends HTMLElement | SVGElement>(style: CSSStyl
         }
     }
     return target;
-};
-
-const serializeDoctype = (doctype?: DocumentType | null): string => {
-    let str = '';
-    if (doctype) {
-        str += '<!DOCTYPE ';
-        if (doctype.name) {
-            str += doctype.name;
-        }
-
-        if (doctype.internalSubset) {
-            str += doctype.internalSubset;
-        }
-
-        if (doctype.publicId) {
-            str += `"${doctype.publicId}"`;
-        }
-
-        if (doctype.systemId) {
-            str += `"${doctype.systemId}"`;
-        }
-
-        str += '>';
-    }
-
-    return str;
 };
 
 const restoreOwnerScroll = (ownerDocument: Document | null, x: number, y: number) => {

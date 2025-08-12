@@ -82,6 +82,7 @@ import { webkitTextStrokeColor } from './property-descriptors/webkit-text-stroke
 import { webkitTextStrokeWidth } from './property-descriptors/webkit-text-stroke-width';
 import { Context } from '../core/context';
 import { objectFit } from './property-descriptors/object-fit';
+import { whiteSpace } from './property-descriptors/whitespace';
 
 export class CSSParsedDeclaration {
     animationDuration: ReturnType<typeof duration.parse>;
@@ -151,6 +152,7 @@ export class CSSParsedDeclaration {
     wordBreak: ReturnType<typeof wordBreak.parse>;
     zIndex: ReturnType<typeof zIndex.parse>;
     objectFit: ReturnType<typeof objectFit.parse>;
+    whiteSpace: ReturnType<typeof whiteSpace.parse>;
 
     constructor(context: Context, declaration: CSSStyleDeclaration) {
         this.animationDuration = parse(context, duration, declaration.animationDuration);
@@ -229,6 +231,7 @@ export class CSSParsedDeclaration {
         this.wordBreak = parse(context, wordBreak, declaration.wordBreak);
         this.zIndex = parse(context, zIndex, declaration.zIndex);
         this.objectFit = parse(context, objectFit, declaration.objectFit);
+        this.whiteSpace = parse(context, whiteSpace, declaration.whiteSpace);
     }
 
     isVisible(): boolean {
@@ -323,3 +326,5 @@ const parse = (context: Context, descriptor: CSSPropertyDescriptor<any>, style?:
             break;
     }
 };
+
+export * from './exports';

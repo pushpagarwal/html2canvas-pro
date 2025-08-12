@@ -16,6 +16,8 @@ export class ElementContainer {
     readonly styles: CSSParsedDeclaration;
     readonly textNodes: TextContainer[] = [];
     readonly elements: ElementContainer[] = [];
+    readonly childNodes: (ElementContainer | TextContainer)[] = [];
+    readonly tagName: string;
     bounds: Bounds;
     flags = 0;
 
@@ -38,6 +40,7 @@ export class ElementContainer {
         }
 
         this.bounds = parseBounds(this.context, element);
+        this.tagName = element.tagName.toLowerCase();
 
         if (isDebugging(element, DebuggerType.RENDER)) {
             this.flags |= FLAGS.DEBUG_RENDER;
